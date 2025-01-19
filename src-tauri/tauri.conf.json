@@ -13,8 +13,8 @@
         "windows": [
             {
                 "title": "tauri-chat",
-                "width": 300,
-                "height": 400,
+                "width": 400,
+                "height": 600,
                 "alwaysOnTop": true,
                 "decorations": false
             }
