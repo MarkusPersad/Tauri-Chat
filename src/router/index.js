@@ -5,10 +5,10 @@ export const router = createRouter({
     routes: [
         {
             path: '/',
-            redirect: '/login'
+            redirect: '/login&register'
         },
         {
-            path: '/login',
+            path: '/login&register',
             component: () => import('../view/Login.vue'),
         }
     ]

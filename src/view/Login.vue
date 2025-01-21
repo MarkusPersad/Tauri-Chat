@@ -23,7 +23,7 @@ const switchRegLog = () => {
 </script>
 <template>
     <div class="overflow-hidden h-screen flex flex-col">
-        <div class="bg-blue-500 text-white w-screen p-4 flex justify-end items-center">
+        <div class="bg-blue-500 text-white w-screen p-4 flex justify-end items-center" data-tauri-drag-region>
             <div class="flex space-x-4">
                 <div class="text-white hover:text-black iconfont iconfont-jianhao join-vertical" @click="minimizeWindow">
                 </div>

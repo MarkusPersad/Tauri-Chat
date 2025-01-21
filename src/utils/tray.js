@@ -2,11 +2,12 @@ import { defaultWindowIcon } from "@tauri-apps/api/app"
 import { Menu } from "@tauri-apps/api/menu"
 import { TrayIcon } from "@tauri-apps/api/tray"
 import { getCurrentWindow } from "@tauri-apps/api/window"
+import { platform } from "@tauri-apps/plugin-os"
 import { exit, relaunch } from '@tauri-apps/plugin-process'
 
 export const SetTray = async () => {
     (await TrayIcon.new({
-        showMenuOnLeftClick: false,
+        showMenuOnLeftClick: platform() == 'linux' ? true : false,
         action: async (event) => {
             console.log(`${event.button}:${event.buttonState}:${event.type}`)
             if (event.type == 'Click' && event.button == 'Left' && event.buttonState == 'Down') {
@@ -18,7 +19,7 @@ export const SetTray = async () => {
         menu: await Menu.new({
             items: TrayMenus
         })
-    })).setShowMenuOnLeftClick(false)
+    }))
 }
 
 export const TrayMenus = [
@@ -30,17 +31,17 @@ export const TrayMenus = [
         }
     },
     {
-        id: 'exit',
-        text: '退出',
-        action: async () => {
-            await exit(0)
-        }
-    },
-    {
         id: 'restart',
         text: '重新加载',
         action: async () => {
             await relaunch()
+        }
+    },
+    {
+        id: 'exit',
+        text: '退出',
+        action: async () => {
+            await exit(0)
         }
     },
 ]
