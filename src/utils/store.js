@@ -1,0 +1,19 @@
+import { LazyStore } from '@tauri-apps/plugin-store'
+
+const store = new LazyStore("store.bin", {
+    autoSave: true,
+})
+
+const setVal = async (key, value) => {
+    await store.set(key, value)
+}
+
+const getValue = async (key) => {
+    return await store.get(key)
+}
+
+const delVal = async (key) => {
+    return await store.delete(key)
+}
+
+export { setVal, getValue, delVal }
