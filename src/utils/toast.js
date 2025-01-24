@@ -10,7 +10,6 @@ export const showToast = (message, duration = 3000, isSuccessful = false) => {
         isSuccessful
     })
     render(vnode, container)
-    console.log(vnode)
     setTimeout(() => {
         render(null, container)
         document.body.removeChild(container)
