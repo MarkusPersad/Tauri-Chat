@@ -1,5 +1,5 @@
 import { GlobalHttp } from './http'
-import { processError } from '../utils'
+import { delVal, processError, setVal } from '../utils'
 
 const API = {
     GetCaptcha: "/account/getcaptcha",
@@ -19,6 +19,41 @@ export const GetCaptcha = async () => {
     }
 }
 export const Logout = async () => {
-    let response = await GlobalHttp.request(API.Logout, null, "GET")
-    return processError(response)
+    try {
+        let response = await GlobalHttp.request(API.Logout, null, "GET")
+        delVal("userToken")
+        return processError(response)
+    } catch (error) {
+        throw error
+    }
+}
+
+export const Register = async (data) => {
+    try {
+        let response = await GlobalHttp.request(API.Register, data, "POST")
+        return processError(response, true)
+    } catch (error) {
+        throw error
+    }
+}
+
+export const Login = async (data) => {
+    try {
+        let response = await GlobalHttp.request(API.Login, data, "POST")
+        response = processError(response)
+        console.log(response)
+        GlobalHttp.setHeader("Authorization", "Bearer " + response)
+        await setVal("userToken", response)
+    } catch (error) {
+        throw error
+    }
+}
+
+export const GetUserInfo = async () => {
+    try {
+        let response = await GlobalHttp.request(API.GetUserInfo, null, "GET")
+        return processError(response)
+    } catch (error) {
+        throw error
+    }
 }

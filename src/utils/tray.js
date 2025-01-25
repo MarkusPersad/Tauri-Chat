@@ -4,6 +4,8 @@ import { TrayIcon } from "@tauri-apps/api/tray"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 import { platform } from "@tauri-apps/plugin-os"
 import { exit, relaunch } from '@tauri-apps/plugin-process'
+import { getVal } from "./store"
+import { Logout } from "../http/account"
 
 export const SetTray = async () => {
     (await TrayIcon.new({
@@ -41,7 +43,16 @@ export const TrayMenus = [
         id: 'exit',
         text: '退出',
         action: async () => {
-            await exit(0)
+            try {
+                if (await getVal("userToken")) {
+                    await Logout();
+                }
+            } catch (error) {
+                console.error("Logout failed:", error);
+                showToast("退出失败，请稍后再试", false);
+                return; // 阻止程序退出
+            }
+            await exit(0);
         }
     },
 ]

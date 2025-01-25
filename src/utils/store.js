@@ -8,7 +8,7 @@ const setVal = async (key, value) => {
     await store.set(key, value)
 }
 
-const getValue = async (key) => {
+const getVal = async (key) => {
     return await store.get(key)
 }
 
@@ -16,4 +16,4 @@ const delVal = async (key) => {
     return await store.delete(key)
 }
 
-export { setVal, getValue, delVal }
+export { setVal, getVal, delVal }

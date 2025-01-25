@@ -19,7 +19,7 @@ class HttpClient {
         return this
     }
     setHeader(key, value) {
-        this.headers[key] = value
+        this.defaultHeaders[key] = value
         return this
     }
 
@@ -55,7 +55,6 @@ class HttpClient {
         catch (error) {
             if (error instanceof HttpError) {
                 showToast(error.message, false)
-                throw error
             }
             throw error
         }
