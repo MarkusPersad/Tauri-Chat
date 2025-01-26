@@ -59,7 +59,6 @@ export const TrayMenus = [
 
 export const ShowMainWindow = async () => {
     const window = getCurrentWindow()
-    console.log(window)
     if (!(await window.isVisible())) {
         await window.show()
     } else {
