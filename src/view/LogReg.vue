@@ -1,13 +1,18 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { GetCaptcha, Login, Register } from '../http';
-import { showToast, isPassword, isUserName } from '../utils';
-import validator from 'validator/es/index'
+import NavBar from '../components/NavBar.vue'
+import { GetCaptcha, GlobalHttp, Login, Register } from '../http';
+import { isPassword, isUserName, isEmpty, isEmail } from '../utils';
 import { getCurrentWindow } from '@tauri-apps/api/window';
+import { useAlerts } from '../store'
 
+const { addAlert } = useAlerts()
 const Ding = ref(false);
 const isLogin = ref(true);
-const base64Captcha = ref({});
+const base64Captcha = ref({
+    id: '',
+    b64s: ''
+});
 const data = ref({
     userName: '',
     email: '',
@@ -22,7 +27,11 @@ const closeWindow = async () => {
 };
 
 const getCaptchas = async () => {
-    base64Captcha.value = await GetCaptcha();
+    try {
+        base64Captcha.value = await GetCaptcha();
+    } catch (error) {
+        throw error
+    }
     data.value.checkCodeKey = base64Captcha.value.id;
 };
 
@@ -36,9 +45,13 @@ const isAlwaysTop = async () => {
 };
 
 onMounted(async () => {
-    await getCurrentWindow().setAlwaysOnTop(false);
-    await getCurrentWindow().setResizable(false);
-    await getCaptchas();
+    try {
+        await getCurrentWindow().setAlwaysOnTop(false);
+        await getCurrentWindow().setResizable(false);
+        await getCaptchas();
+    } catch (error) {
+        throw error
+    }
 });
 
 const switchRegLog = () => {
@@ -55,18 +68,30 @@ const switchRegLog = () => {
 };
 
 const login = async () => {
-    if (validator.isEmpty(data.value.email) || validator.isEmpty(data.value.password) ||
-        validator.isEmpty(data.value.checkCodeKey) || validator.isEmpty(data.value.checkCode)
+    if (isEmpty(data.value.email) || isEmpty(data.value.password) ||
+        isEmpty(data.value.checkCodeKey) || isEmpty(data.value.checkCode)
     ) {
-        showToast("字段不能为空", 1500, false)
+        addAlert({
+            type: 'error',
+            message: '字段不能为空',
+            duration: 1500
+        })
         return
     }
-    if (!validator.isEmail(data.value.email)) {
-        showToast("邮箱格式不匹配", 1500, false)
+    if (!isEmail(data.value.email)) {
+        addAlert({
+            type: 'error',
+            message: '邮箱格式错误',
+            duration: 1500
+        })
         return
     }
     if (!isPassword(data.value.password)) {
-        showToast("密码格式必须为8~32位，包含大小写字母")
+        addAlert({
+            type: 'error',
+            message: '密码格式必须包括大小写字母，长度在8~32',
+            duration: 1500
+        })
         return
     }
     try {
@@ -80,32 +105,56 @@ const login = async () => {
             getCaptchas()
         }
     } catch (error) {
-        showToast(error.message, 1500, false)
+        addAlert({
+            type: 'error',
+            message: error.message,
+            duration: 1500
+        })
         throw error
     }
 }
 
 const register = async () => {
-    if (validator.isEmpty(data.value.userName) || validator.isEmpty(data.value.email) || validator.isEmpty(data.value.password) ||
-        validator.isEmpty(data.value.checkCodeKey) || validator.isEmpty(data.value.checkCode)
+    if (isEmpty(data.value.userName) || isEmpty(data.value.email) || isEmpty(data.value.password) ||
+        isEmpty(data.value.checkCodeKey) || isEmpty(data.value.checkCode)
     ) {
-        showToast("字段不能为空", 1500, false)
+        addAlert({
+            type: 'error',
+            message: '字段不能为空',
+            duration: 1500
+        })
         return
     }
     if (!isUserName(data.value.userName)) {
-        showToast("用户名长度必须在8~32")
+        addAlert({
+            type: 'error',
+            message: '用户名必须在8~32位',
+            duration: 1500
+        })
         return
     }
-    if (!validator.isEmail(data.value.email)) {
-        showToast("邮箱格式不匹配", 1500, false)
+    if (!isEmail(data.value.email)) {
+        addAlert({
+            type: 'error',
+            message: '邮箱格式错误',
+            duration: 1500
+        })
         return
     }
     if (!isPassword(data.value.password)) {
-        showToast("密码格式必须为8~32位，包含大小写字母")
+        addAlert({
+            type: 'error',
+            message: '密码格式必须包括大小写字母，长度在8~32',
+            duration: 1500
+        })
         return
     }
     if (repassword.value !== data.value.password) {
-        showToast("两次密码必须一致", 1500, false)
+        addAlert({
+            type: 'error',
+            message: '两次密码必须一致',
+            duration: 1500
+        })
     }
     try {
         let response = await Register({
@@ -135,15 +184,16 @@ const register = async () => {
 </script>
 <template>
     <div class="overflow-hidden h-screen flex flex-col">
-        <div class="bg-blue-500 text-white w-screen p-4 flex justify-end items-center" data-tauri-drag-region>
-            <div class="flex space-x-4">
-                <div class="text-white hover:text-black iconfont iconfont-jianhao join-vertical" @click="minimizeWindow">
+        <NavBar class="text-white" data-tauri-drag-region>
+            <template #end>
+                <div class="space-x-4 flex">
+                    <div class="iconfont iconfont-jianhao hover:text-black" @click="minimizeWindow"></div>
+                    <div class="hover:text-black iconfont" :class="{ 'iconfont-dinging': Ding, 'iconfont-ding': !Ding }"
+                        @click="isAlwaysTop"></div>
+                    <div class="hover:text-black iconfont iconfont-guanbi" @click="closeWindow"></div>
                 </div>
-                <div class="text-white hover:text-black iconfont"
-                    :class="{ 'iconfont-dinging': Ding, 'iconfont-ding': !Ding }" @click="isAlwaysTop"></div>
-                <div class="text-white hover:text-black iconfont iconfont-guanbi join-vertical" @click="closeWindow"></div>
-            </div>
-        </div>
+            </template>
+        </NavBar>
         <div class="flex flex-col items-center justify-center flex-1 p-4">
             <h2 class="text-2xl mb-4 text-blue-500 font-sans">{{ isLogin == true ? '登录' : '注册' }}</h2>
             <form class="w-full max-w-md" @submit.prevent>
@@ -165,14 +215,16 @@ const register = async () => {
                     <input type="password" placeholder="确认密码" class="grow pl-8" v-model="repassword" @focusout="" />
                 </label>
                 <div class="flex items-center w-full mb-4">
-                    <input type="text" placeholder="验证码" class="input input-bordered w-2/3 pr-8" v-model="data.checkCode" />
-                    <img :src="base64Captcha.b64s" alt="验证码" class="w-1/3 h-10 cursor-pointer" @click="getCaptchas" />
+                    <input type="text" placeholder="验证码" class="input input-bordered w-2/3 pr-8"
+                        v-model="data.checkCode" />
+                    <img :src="base64Captcha?.b64s" alt="验证码" class="w-1/3 h-10 cursor-pointer" @click="getCaptchas" />
                 </div>
                 <button v-if="isLogin" class="btn btn-primary w-full" @click.prevent="login">登录</button>
                 <button v-if="!isLogin" class="btn btn-primary w-full" @click.prevent="register">注册</button>
             </form>
-            <a class="text-sm text-blue-500 hover:underline mt-4" @click="switchRegLog">{{ isLogin === true ? '注册' : '登录'
-            }}</a>
+            <a class="text-sm text-blue-500 hover:underline mt-4" @click="switchRegLog">{{ isLogin === true ? '注册' :
+                '登录'
+                }}</a>
         </div>
     </div>
 </template>

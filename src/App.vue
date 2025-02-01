@@ -1,12 +1,13 @@
+<template>
+    <RouterView />
+    <Toast />
+</template>
 <script setup>
-import { RouterView } from 'vue-router';
-import { SetTray } from './utils'
-SetTray().then(() => {
+import Toast from './components/Toast.vue';
+import { setTray } from './utils';
+setTray().then(() => {
     console.log('Success')
 }).catch((error) => {
     console.log("error", error)
 })
 </script>
-<template>
-    <RouterView />
-</template>

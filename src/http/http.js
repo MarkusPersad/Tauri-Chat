@@ -1,6 +1,6 @@
-import { fetch } from "@tauri-apps/plugin-http"
-import { showToast } from '../utils'
-import { TokenInterceptor } from './interceptors'
+import { fetch } from "@tauri-apps/plugin-http";
+import { useAlerts } from '../store'
+import { TokenInterceptor } from './interceptor'
 
 class HttpClient {
     constructor(baseURL, options) {
@@ -22,7 +22,6 @@ class HttpClient {
         this.defaultHeaders[key] = value
         return this
     }
-
     async request(endpoint, data = {}, method = "GET") {
         try {
             const url = `${this.baseURL}${endpoint}`
@@ -54,7 +53,11 @@ class HttpClient {
         }
         catch (error) {
             if (error instanceof HttpError) {
-                showToast(error.message, false)
+                useAlerts().addAlert({
+                    type: 'error',
+                    message: error.message,
+                    duration: 1500
+                })
             }
             throw error
         }
@@ -68,10 +71,10 @@ class HttpError extends Error {
         this.statusCode = statusCode
     }
 }
+
 const GlobalHttp = new HttpClient("http://127.0.0.1:8080/api", {
     connectTimeout: 3000,
     maxRedirections: 0,
 }).addRequestInterceptor(TokenInterceptor)
-
 
 export { GlobalHttp, HttpError }

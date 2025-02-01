@@ -1,63 +1,61 @@
 import { defaultWindowIcon } from "@tauri-apps/api/app"
 import { Menu } from "@tauri-apps/api/menu"
 import { TrayIcon } from "@tauri-apps/api/tray"
-import { getCurrentWindow } from "@tauri-apps/api/window"
-import { platform } from "@tauri-apps/plugin-os"
-import { exit, relaunch } from '@tauri-apps/plugin-process'
-import { getVal } from "./store"
-import { Logout } from "../http/account"
+import { platform } from "@tauri-apps/plugin-os";
+import { exit, relaunch } from "@tauri-apps/plugin-process";
+import { useAlerts } from "../store";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
-export const SetTray = async () => {
-    (await TrayIcon.new({
-        showMenuOnLeftClick: platform() == 'linux' ? true : false,
+export const setTray = async () => {
+    return await TrayIcon.new({
+        icon: await defaultWindowIcon(),
+        showMenuOnLeftClick: platform() === "linux",
         action: async (event) => {
-            console.log(`${event.button}:${event.buttonState}:${event.type}`)
-            if (event.type == 'Click' && event.button == 'Left' && event.buttonState == 'Down') {
-                await ShowMainWindow()
+            if (event.type === 'Click' && event.button === 'Left' && event.buttonState === 'Down') {
+                await showMainWindow()
             }
         },
         tooltip: 'Tauri-Chat',
-        icon: await defaultWindowIcon(),
         menu: await Menu.new({
-            items: TrayMenus
+            items: [
+                {
+                    id: 'ShowMainWindow',
+                    text: '显示主窗口',
+                    action: async () => {
+                        await showMainWindow()
+                    }
+                },
+                {
+                    id: 'restart',
+                    text: '重新加载',
+                    action: async () => {
+                        await relaunch()
+                    }
+                },
+                {
+                    id: 'exit',
+                    text: '退出',
+                    action: async () => {
+                        try {
+                            if (await getVal("userToken")) {
+                                await Logout();
+                            }
+                        } catch (error) {
+                            useAlerts().addAlert({
+                                type: 'error',
+                                message: '退出登录失败',
+                                duration: 1500,
+                            })
+                        }
+                        await exit(0)
+                    }
+                }
+            ]
         })
-    }))
+    })
 }
 
-export const TrayMenus = [
-    {
-        id: 'showMainWindow',
-        text: '显示主窗口',
-        action: async () => {
-            await ShowMainWindow()
-        }
-    },
-    {
-        id: 'restart',
-        text: '重新加载',
-        action: async () => {
-            await relaunch()
-        }
-    },
-    {
-        id: 'exit',
-        text: '退出',
-        action: async () => {
-            try {
-                if (await getVal("userToken")) {
-                    await Logout();
-                }
-            } catch (error) {
-                console.error("Logout failed:", error);
-                showToast("退出失败，请稍后再试", false);
-                return; // 阻止程序退出
-            }
-            await exit(0);
-        }
-    },
-]
-
-export const ShowMainWindow = async () => {
+const showMainWindow = async () => {
     const window = getCurrentWindow()
     if (!(await window.isVisible())) {
         await window.show()

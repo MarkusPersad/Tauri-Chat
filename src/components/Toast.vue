@@ -1,37 +1,36 @@
-<script setup>
-import { onMounted, ref } from 'vue';
-
-const props = defineProps({
-    message: {
-        type: String,
-        default: ""
-    },
-    duration: {
-        type: Number,
-        default: 3000
-    },
-    isSuccessful: {
-        type: Boolean,
-        default: false
-    }
-})
-
-const visible = ref(false)
-
-const show = () => {
-    visible.value = true
-    setTimeout(() => {
-        visible.value = false
-    }, props.duration)
-}
-onMounted(() => {
-    show()
-})
-</script>
 <template>
-    <div v-if="visible" class="toast toast-top toast-center">
-        <div class="alert" :class="{ 'alert-success': isSuccessful, 'alert-error': !isSuccessful }">
-            <span>{{ message }}</span>
-        </div>
+    <div v-show="alerts.length > 0" class="toast toast-top toast-center">
+        <TransitionGroup name="toast">
+            <div v-for="alter in alerts" :key="alter.id" :class="['alert', alertsClasses[alter.type]]">
+                <span>{{ alter.message }}</span>
+                <button class="btn btn-xs btn-accent btn-outline" @click="removeAlert(alter.id)">
+                    X
+                </button>
+            </div>
+        </TransitionGroup>
     </div>
 </template>
+<script setup>
+import { TransitionGroup } from 'vue';
+import { useAlerts } from '../store'
+import { reactive } from 'vue';
+const { alerts, removeAlert } = useAlerts()
+const alertsClasses = reactive({
+    info: 'alert-info',
+    warning: 'alert-warning',
+    success: 'alert-success',
+    error: 'alert-error'
+})
+</script>
+<style scoped>
+.toast-enter-active,
+.toast-leave-active {
+    transition: all 0.5s ease;
+}
+
+.toast-enter-from,
+.toast-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
+</style>

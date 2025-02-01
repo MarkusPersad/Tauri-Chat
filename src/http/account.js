@@ -1,5 +1,7 @@
-import { GlobalHttp } from './http'
-import { delVal, processError, setVal } from '../utils'
+import { processResponse } from './utils';
+import { GlobalHttp } from './http';
+import { useAlerts } from '../store';
+import { delVal, setVal } from '../utils'
 
 const API = {
     GetCaptcha: "/account/getcaptcha",
@@ -10,50 +12,73 @@ const API = {
     Search: "/account/search",
 }
 
-export const GetCaptcha = async () => {
+const GetCaptcha = async () => {
     try {
         let response = await GlobalHttp.request(API.GetCaptcha, null, "GET")
-        return processError(response)
+        console.log(response)
+        return processResponse(response)
     } catch (error) {
-        throw error
-    }
-}
-export const Logout = async () => {
-    try {
-        let response = await GlobalHttp.request(API.Logout, null, "GET")
-        delVal("userToken")
-        return processError(response)
-    } catch (error) {
+        useAlerts().addAlert({
+            type: 'error',
+            message: "请求验证码出错",
+            duration: 1500
+        })
         throw error
     }
 }
 
-export const Register = async (data) => {
+const Register = async (data) => {
     try {
         let response = await GlobalHttp.request(API.Register, data, "POST")
-        return processError(response, true)
+        return processResponse(response, true)
     } catch (error) {
-        throw error
+        useAlerts().addAlert({
+            type: 'error',
+            message: "注册请求出错",
+            duration: 1500
+        })
     }
 }
 
-export const Login = async (data) => {
+const Login = async (data) => {
     try {
         let response = await GlobalHttp.request(API.Login, data, "POST")
-        response = processError(response)
-        console.log(response)
+        response = processResponse(response, true)
         GlobalHttp.setHeader("Authorization", "Bearer " + response)
         await setVal("userToken", response)
     } catch (error) {
-        throw error
+        useAlerts().addAlert({
+            type: 'error',
+            message: "登陆请求出错",
+            duration: 1500
+        })
     }
 }
 
-export const GetUserInfo = async () => {
+const Logout = async () => {
     try {
-        let response = await GlobalHttp.request(API.GetUserInfo, null, "GET")
-        return processError(response)
+        let response = await GlobalHttp.request(API.Logout, null, "GET")
+        await delVal("userToken")
+        return processResponse(response)
     } catch (error) {
-        throw error
+        useAlerts({
+            type: 'error',
+            message: "退出登录请求出错",
+            duration: 1500
+        })
     }
 }
+
+const GetUserInfo = async () => {
+    try {
+        let response = await GlobalHttp.request(API.GetUserInfo, null, "GET")
+        return processResponse(response)
+    } catch (error) {
+        useAlerts().addAlert({
+            type: 'error',
+            message: "获取用户信息出错",
+            duration: 1500
+        })
+    }
+}
+export { GetCaptcha, Register, Login, Logout, GetUserInfo }
