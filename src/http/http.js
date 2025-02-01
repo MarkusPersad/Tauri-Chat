@@ -1,6 +1,7 @@
 import { fetch } from "@tauri-apps/plugin-http";
 import { useAlerts } from '../store'
 import { TokenInterceptor } from './interceptor'
+import { CONSTANTS } from "../constants";
 
 class HttpClient {
     constructor(baseURL, options) {
@@ -72,7 +73,7 @@ class HttpError extends Error {
     }
 }
 
-const GlobalHttp = new HttpClient("http://127.0.0.1:8080/api", {
+const GlobalHttp = new HttpClient(CONSTANTS.API_INTERFACE, {
     connectTimeout: 3000,
     maxRedirections: 0,
 }).addRequestInterceptor(TokenInterceptor)

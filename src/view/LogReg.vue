@@ -1,3 +1,49 @@
+<template>
+    <div class="overflow-hidden h-screen flex flex-col">
+        <NavBar class="text-white" data-tauri-drag-region>
+            <template #end>
+                <div class="space-x-4 flex">
+                    <div class="iconfont iconfont-jianhao hover:text-black" @click="minimizeWindow"></div>
+                    <div class="hover:text-black iconfont" :class="{ 'iconfont-dinging': Ding, 'iconfont-ding': !Ding }"
+                        @click="isAlwaysTop"></div>
+                    <div class="hover:text-black iconfont iconfont-guanbi" @click="closeWindow"></div>
+                </div>
+            </template>
+        </NavBar>
+        <div class="flex flex-col items-center justify-center flex-1 p-4">
+            <h2 class="text-2xl mb-4 text-blue-500 font-sans">{{ isLogin == true ? '登录' : '注册' }}</h2>
+            <form class="w-full max-w-md" @submit.prevent>
+                <label v-if="!isLogin" class="input input-bordered flex items-center gap-2 justify-between w-full mb-4">
+                    <div class="iconfont iconfont-yonghuming text-xl"></div>
+                    <input type="text" placeholder="用户名" class="grow pl-8" v-model="data.userName" />
+                </label>
+                <label class="input input-bordered flex items-center gap-2 justify-between w-full mb-4">
+                    <div class="iconfont iconfont-youxiang text-xl"></div>
+                    <input type="email" placeholder="邮箱" class="grow pl-8" v-model="data.email" />
+                </label>
+                <label class="input input-bordered flex items-center gap-2 justify-between w-full mb-4">
+                    <div class="iconfont iconfont-mima text-xl"></div>
+                    <input type="password" placeholder="密码" class="grow pl-8" v-model="data.password" />
+                </label>
+                <!-- 条件渲染确认密码输入框 -->
+                <label v-if="!isLogin" class="input input-bordered flex items-center gap-2 justify-between w-full mb-4">
+                    <div class="iconfont iconfont-mima text-xl"></div>
+                    <input type="password" placeholder="确认密码" class="grow pl-8" v-model="repassword" @focusout="" />
+                </label>
+                <div class="flex items-center w-full mb-4">
+                    <input type="text" placeholder="验证码" class="input input-bordered w-2/3 pr-8"
+                        v-model="data.checkCode" />
+                    <img :src="base64Captcha?.b64s" alt="验证码" class="w-1/3 h-10 cursor-pointer" @click="getCaptchas" />
+                </div>
+                <button v-if="isLogin" class="btn btn-primary w-full" @click.prevent="login">登录</button>
+                <button v-if="!isLogin" class="btn btn-primary w-full" @click.prevent="register">注册</button>
+            </form>
+            <a class="text-sm text-blue-500 hover:underline mt-4" @click="switchRegLog">{{ isLogin === true ? '注册' :
+                '登录'
+                }}</a>
+        </div>
+    </div>
+</template>
 <script setup>
 import { ref, onMounted } from 'vue';
 import NavBar from '../components/NavBar.vue'
@@ -182,49 +228,3 @@ const register = async () => {
     }
 }
 </script>
-<template>
-    <div class="overflow-hidden h-screen flex flex-col">
-        <NavBar class="text-white" data-tauri-drag-region>
-            <template #end>
-                <div class="space-x-4 flex">
-                    <div class="iconfont iconfont-jianhao hover:text-black" @click="minimizeWindow"></div>
-                    <div class="hover:text-black iconfont" :class="{ 'iconfont-dinging': Ding, 'iconfont-ding': !Ding }"
-                        @click="isAlwaysTop"></div>
-                    <div class="hover:text-black iconfont iconfont-guanbi" @click="closeWindow"></div>
-                </div>
-            </template>
-        </NavBar>
-        <div class="flex flex-col items-center justify-center flex-1 p-4">
-            <h2 class="text-2xl mb-4 text-blue-500 font-sans">{{ isLogin == true ? '登录' : '注册' }}</h2>
-            <form class="w-full max-w-md" @submit.prevent>
-                <label v-if="!isLogin" class="input input-bordered flex items-center gap-2 justify-between w-full mb-4">
-                    <div class="iconfont iconfont-yonghuming text-xl"></div>
-                    <input type="text" placeholder="用户名" class="grow pl-8" v-model="data.userName" />
-                </label>
-                <label class="input input-bordered flex items-center gap-2 justify-between w-full mb-4">
-                    <div class="iconfont iconfont-youxiang text-xl"></div>
-                    <input type="email" placeholder="邮箱" class="grow pl-8" v-model="data.email" />
-                </label>
-                <label class="input input-bordered flex items-center gap-2 justify-between w-full mb-4">
-                    <div class="iconfont iconfont-mima text-xl"></div>
-                    <input type="password" placeholder="密码" class="grow pl-8" v-model="data.password" />
-                </label>
-                <!-- 条件渲染确认密码输入框 -->
-                <label v-if="!isLogin" class="input input-bordered flex items-center gap-2 justify-between w-full mb-4">
-                    <div class="iconfont iconfont-mima text-xl"></div>
-                    <input type="password" placeholder="确认密码" class="grow pl-8" v-model="repassword" @focusout="" />
-                </label>
-                <div class="flex items-center w-full mb-4">
-                    <input type="text" placeholder="验证码" class="input input-bordered w-2/3 pr-8"
-                        v-model="data.checkCode" />
-                    <img :src="base64Captcha?.b64s" alt="验证码" class="w-1/3 h-10 cursor-pointer" @click="getCaptchas" />
-                </div>
-                <button v-if="isLogin" class="btn btn-primary w-full" @click.prevent="login">登录</button>
-                <button v-if="!isLogin" class="btn btn-primary w-full" @click.prevent="register">注册</button>
-            </form>
-            <a class="text-sm text-blue-500 hover:underline mt-4" @click="switchRegLog">{{ isLogin === true ? '注册' :
-                '登录'
-                }}</a>
-        </div>
-    </div>
-</template>
