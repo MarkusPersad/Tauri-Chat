@@ -1,5 +1,5 @@
 <template>
-    <div class="navbar bg-blue-500 dark:bg-gray-800 shadow-sm">
+    <div class="navbar bg-blue-500 shadow-sm">
         <div class="navbar-start">
             <slot name="start"></slot>
         </div>
