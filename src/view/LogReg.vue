@@ -2,12 +2,10 @@
     <div class="overflow-hidden h-screen flex flex-col">
         <NavBar class="text-white" data-tauri-drag-region>
             <template #end>
-                <div class="space-x-4 flex">
-                    <div class="iconfont iconfont-jianhao hover:text-black" @click="minimizeWindow"></div>
-                    <div class="hover:text-black iconfont" :class="{ 'iconfont-dinging': Ding, 'iconfont-ding': !Ding }"
-                        @click="isAlwaysTop"></div>
-                    <div class="hover:text-black iconfont iconfont-guanbi" @click="closeWindow"></div>
-                </div>
+                <div class="iconfont iconfont-jianhao hover:text-black" @click="minimizeWindow"></div>
+                <div class="hover:text-black iconfont" :class="{ 'iconfont-dinging': Ding, 'iconfont-ding': !Ding }"
+                    @click="isAlwaysTop"></div>
+                <div class="hover:text-black iconfont iconfont-guanbi" @click="closeWindow"></div>
             </template>
         </NavBar>
         <div class="flex flex-col items-center justify-center flex-1 p-4">

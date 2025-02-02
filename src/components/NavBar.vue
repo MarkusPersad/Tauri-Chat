@@ -1,5 +1,5 @@
 <template>
-    <div class="navbar bg-blue-500 shadow-sm">
+    <div class="navbar bg-blue-500 dark:bg-gray-800 shadow-sm">
         <div class="navbar-start">
             <slot name="start"></slot>
         </div>
@@ -7,7 +7,9 @@
             <slot name="center"></slot>
         </div>
         <div class="navbar-end">
-            <slot name="end"></slot>
+            <div class="space-x-4 flex">
+                <slot name="end"></slot>
+            </div>
         </div>
     </div>
 </template>
