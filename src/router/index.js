@@ -10,6 +10,10 @@ export const router = createRouter({
         {
             path: '/registerorlogin',
             component: () => import('../view/LogReg.vue')
+        },
+        {
+            path: '/home',
+            component: () => import('../view/Home.vue')
         }
     ]
 })

@@ -8,6 +8,7 @@
     "permissions": [
         "core:default",
         "opener:default",
+        "core:window:allow-set-size",
         "core:app:allow-default-window-icon",
         "core:window:allow-set-resizable",
         "core:window:allow-set-always-on-top",

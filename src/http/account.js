@@ -1,6 +1,5 @@
 import { processResponse } from './utils';
 import { GlobalHttp } from './http';
-import { useAlerts } from '../store';
 import { delVal, setVal } from '../utils'
 
 const API = {
@@ -15,14 +14,8 @@ const API = {
 const GetCaptcha = async () => {
     try {
         let response = await GlobalHttp.request(API.GetCaptcha, null, "GET")
-        console.log(response)
         return processResponse(response)
     } catch (error) {
-        useAlerts().addAlert({
-            type: 'error',
-            message: "请求验证码出错",
-            duration: 1500
-        })
         throw error
     }
 }
@@ -32,11 +25,7 @@ const Register = async (data) => {
         let response = await GlobalHttp.request(API.Register, data, "POST")
         return processResponse(response, true)
     } catch (error) {
-        useAlerts().addAlert({
-            type: 'error',
-            message: "注册请求出错",
-            duration: 1500
-        })
+        throw error
     }
 }
 
@@ -47,11 +36,7 @@ const Login = async (data) => {
         GlobalHttp.setHeader("Authorization", "Bearer " + response)
         await setVal("userToken", response)
     } catch (error) {
-        useAlerts().addAlert({
-            type: 'error',
-            message: "登陆请求出错",
-            duration: 1500
-        })
+        throw error
     }
 }
 
@@ -61,11 +46,7 @@ const Logout = async () => {
         await delVal("userToken")
         return processResponse(response)
     } catch (error) {
-        useAlerts({
-            type: 'error',
-            message: "退出登录请求出错",
-            duration: 1500
-        })
+        throw error
     }
 }
 
@@ -74,11 +55,7 @@ const GetUserInfo = async () => {
         let response = await GlobalHttp.request(API.GetUserInfo, null, "GET")
         return processResponse(response)
     } catch (error) {
-        useAlerts().addAlert({
-            type: 'error',
-            message: "获取用户信息出错",
-            duration: 1500
-        })
+        throw error
     }
 }
 export { GetCaptcha, Register, Login, Logout, GetUserInfo }

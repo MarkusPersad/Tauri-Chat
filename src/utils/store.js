@@ -4,7 +4,7 @@ const store = new LazyStore("store.bin", {
     autoSave: true
 })
 
-const setVal = async (key, store) => {
+const setVal = async (key, value) => {
     await store.set(key, value)
 }
 

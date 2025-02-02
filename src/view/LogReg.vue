@@ -47,12 +47,14 @@ import { ref, onMounted } from 'vue';
 import NavBar from '../components/NavBar.vue'
 import { GetCaptcha, GlobalHttp, Login, Register } from '../http';
 import { isPassword, isUserName, isEmpty, isEmail } from '../utils';
-import { getCurrentWindow } from '@tauri-apps/api/window';
+import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
 import { useAlerts } from '../store'
+import { useRouter } from 'vue-router'
 
 const { addAlert } = useAlerts()
 const Ding = ref(false);
 const isLogin = ref(true);
+const router = useRouter()
 const base64Captcha = ref({
     id: '',
     b64s: ''
@@ -148,6 +150,9 @@ const login = async () => {
         if (response === -1) {
             getCaptchas()
         }
+        await getCurrentWindow().setSize(new LogicalSize(800, 600))
+        await getCurrentWindow().setResizable(true)
+        router.push('/home')
     } catch (error) {
         addAlert({
             type: 'error',
