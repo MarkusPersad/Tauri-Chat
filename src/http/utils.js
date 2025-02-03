@@ -1,21 +1,12 @@
-import { useAlerts } from "../store"
-const { addAlert } = useAlerts()
+import { SendNotification } from "../utils"
 
-export const processResponse = (response, show = false) => {
+export const processResponse = async (response, show = false) => {
     if (response.code !== 0) {
-        addAlert({
-            type: 'error',
-            message: response.msg,
-            duration: 1500
-        })
+        await SendNotification('Warning', response.msg, 'warning')
         return -1
     } else {
         if (show) {
-            addAlert({
-                type: 'success',
-                message: response.msg,
-                duration: 1500
-            })
+            await SendNotification('Success', response.msg, 'success')
         }
         return response.data
     }

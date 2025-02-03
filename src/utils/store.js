@@ -1,6 +1,6 @@
 import { LazyStore } from "@tauri-apps/plugin-store";
 
-const store = new LazyStore("store.bin", {
+const store = new LazyStore('store.json', {
     autoSave: true
 })
 

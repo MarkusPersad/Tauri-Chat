@@ -1,6 +1,7 @@
 import { processResponse } from './utils';
 import { GlobalHttp } from './http';
-import { delVal, setVal } from '../utils'
+import { delVal, getVal, setVal } from '../utils'
+import { CONSTANTS } from '../constants';
 
 const API = {
     GetCaptcha: "/account/getcaptcha",
@@ -14,7 +15,7 @@ const API = {
 const GetCaptcha = async () => {
     try {
         let response = await GlobalHttp.request(API.GetCaptcha, null, "GET")
-        return processResponse(response)
+        return await processResponse(response)
     } catch (error) {
         throw error
     }
@@ -23,7 +24,7 @@ const GetCaptcha = async () => {
 const Register = async (data) => {
     try {
         let response = await GlobalHttp.request(API.Register, data, "POST")
-        return processResponse(response, true)
+        return await processResponse(response, true)
     } catch (error) {
         throw error
     }
@@ -32,9 +33,9 @@ const Register = async (data) => {
 const Login = async (data) => {
     try {
         let response = await GlobalHttp.request(API.Login, data, "POST")
-        response = processResponse(response, true)
+        response = await processResponse(response, true)
         GlobalHttp.setHeader("Authorization", "Bearer " + response)
-        await setVal("userToken", response)
+        await setVal(CONSTANTS.TOKEN_KEY, response)
         return response
     } catch (error) {
         throw error
@@ -44,8 +45,8 @@ const Login = async (data) => {
 const Logout = async () => {
     try {
         let response = await GlobalHttp.request(API.Logout, null, "GET")
-        await delVal("userToken")
-        return processResponse(response)
+        await delVal(CONSTANTS.TOKEN_KEY)
+        return await processResponse(response)
     } catch (error) {
         throw error
     }
@@ -54,7 +55,7 @@ const Logout = async () => {
 const GetUserInfo = async () => {
     try {
         let response = await GlobalHttp.request(API.GetUserInfo, null, "GET")
-        return processResponse(response)
+        return await processResponse(response)
     } catch (error) {
         throw error
     }

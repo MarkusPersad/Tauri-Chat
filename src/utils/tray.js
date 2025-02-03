@@ -3,8 +3,12 @@ import { Menu } from "@tauri-apps/api/menu"
 import { TrayIcon } from "@tauri-apps/api/tray"
 import { platform } from "@tauri-apps/plugin-os";
 import { exit, relaunch } from "@tauri-apps/plugin-process";
-import { useAlerts } from "../store";
 import { getCurrentWindow } from "@tauri-apps/api/window";
+import { Logout } from '../http'
+import { SendNotification } from "./notification";
+import { isEmpty } from "lodash";
+import { CONSTANTS } from "../constants";
+import { getVal } from '../utils'
 
 export const setTray = async () => {
     return await TrayIcon.new({
@@ -37,15 +41,12 @@ export const setTray = async () => {
                     text: '退出',
                     action: async () => {
                         try {
-                            if (await getVal("userToken")) {
+                            let token = await getVal(CONSTANTS.TOKEN_KEY)
+                            if (!isEmpty(token)) {
                                 await Logout();
                             }
                         } catch (error) {
-                            useAlerts().addAlert({
-                                type: 'error',
-                                message: '退出登录失败',
-                                duration: 1500,
-                            })
+                            await SendNotification('Error', 'Failed to Logout', 'error')
                         }
                         await exit(0)
                     }

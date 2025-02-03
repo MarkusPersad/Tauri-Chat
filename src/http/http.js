@@ -1,7 +1,7 @@
 import { fetch } from "@tauri-apps/plugin-http";
-import { useAlerts } from '../store'
 import { TokenInterceptor } from './interceptor'
 import { CONSTANTS } from "../constants";
+import { SendNotification } from "../utils";
 
 class HttpClient {
     constructor(baseURL, options) {
@@ -42,6 +42,7 @@ class HttpClient {
                 connectTimeout: this.options.connectTimeout,
                 maxRedirections: this.options.maxRedirections,
                 method: config.method,
+                headers: config.headers,
                 body: config.method.toUpperCase() === "GET" ? null : JSON.stringify(config.data)
             })
             if (!response.ok) {
@@ -54,11 +55,7 @@ class HttpClient {
         }
         catch (error) {
             if (error instanceof HttpError) {
-                useAlerts().addAlert({
-                    type: 'error',
-                    message: error.message,
-                    duration: 1500
-                })
+                await SendNotification('Error', error.message, 'error')
             }
             throw error
         }
