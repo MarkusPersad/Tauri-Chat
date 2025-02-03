@@ -35,6 +35,7 @@ const Login = async (data) => {
         response = processResponse(response, true)
         GlobalHttp.setHeader("Authorization", "Bearer " + response)
         await setVal("userToken", response)
+        return response
     } catch (error) {
         throw error
     }

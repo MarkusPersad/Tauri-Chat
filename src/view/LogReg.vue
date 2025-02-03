@@ -1,6 +1,6 @@
 <template>
     <div class="overflow-hidden h-screen flex flex-col">
-        <NavBar class="text-white" data-tauri-drag-region>
+        <NavBar data-tauri-drag-region>
             <template #end>
                 <div class="iconfont iconfont-jianhao hover:text-black" @click="minimizeWindow"></div>
                 <div class="hover:text-black iconfont" :class="{ 'iconfont-dinging': Ding, 'iconfont-ding': !Ding }"
@@ -50,6 +50,7 @@ import { isPassword, isUserName, isEmpty, isEmail } from '../utils';
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
 import { useAlerts } from '../store'
 import { useRouter } from 'vue-router'
+import { exit } from '@tauri-apps/plugin-process';
 
 const { addAlert } = useAlerts()
 const Ding = ref(false);
@@ -69,7 +70,11 @@ const data = ref({
 const repassword = ref("");
 
 const closeWindow = async () => {
-    await getCurrentWindow().close();
+    try {
+        await exit(0)
+    } catch (error) {
+        throw error
+    }
 };
 
 const getCaptchas = async () => {
@@ -82,12 +87,20 @@ const getCaptchas = async () => {
 };
 
 const minimizeWindow = async () => {
-    await getCurrentWindow().minimize();
+    try {
+        await getCurrentWindow().minimize();
+    } catch (error) {
+        throw error
+    }
 };
 
 const isAlwaysTop = async () => {
-    Ding.value = !Ding.value;
-    await getCurrentWindow().setAlwaysOnTop(Ding.value);
+    try {
+        Ding.value = !Ding.value;
+        await getCurrentWindow().setAlwaysOnTop(Ding.value);
+    } catch (error) {
+        throw error
+    }
 };
 
 onMounted(async () => {
@@ -149,10 +162,13 @@ const login = async () => {
         })
         if (response === -1) {
             getCaptchas()
+            data.value.checkCode = ""
+            data.value.password = ""
+        } else {
+            await getCurrentWindow().setSize(new LogicalSize(800, 600))
+            await getCurrentWindow().setResizable(true)
+            router.push('/home')
         }
-        await getCurrentWindow().setSize(new LogicalSize(800, 600))
-        await getCurrentWindow().setResizable(true)
-        router.push('/home')
     } catch (error) {
         addAlert({
             type: 'error',

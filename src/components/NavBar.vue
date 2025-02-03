@@ -7,7 +7,7 @@
             <slot name="center"></slot>
         </div>
         <div class="navbar-end">
-            <div class="space-x-4 flex">
+            <div class="space-x-4 flex text-white">
                 <slot name="end"></slot>
             </div>
         </div>
