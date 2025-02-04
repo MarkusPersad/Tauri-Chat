@@ -13,9 +13,6 @@ export const isUserName = (value) => {
     }
     return value.length >= 8 && value.length <= 32
 }
-export const isEmpty = (value) => {
-    return typeof value === 'string' ? value.trim() === '' : value == null;
-};
 
 export const isEmail = (value) => {
     if (typeof value !== 'string') {
