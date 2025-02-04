@@ -36,6 +36,7 @@
             ]
         },
         "store:default",
+        "fs:allow-resource-read-recursive",
         "notification:default"
     ]
 }

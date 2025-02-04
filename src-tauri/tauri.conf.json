@@ -32,8 +32,11 @@
             "icons/icon.icns",
             "icons/icon.ico"
         ],
-        "resources": [
-            "../public/icons"
-        ]
+        "resources": {
+            "../public/icons/info.png": "resource/icons/info.png",
+            "../public/icons/color-error.png": "resource/icons/color-error.png",
+            "../public/icons/color-success.png": "resource/icons/color-success.png",
+            "../public/icons/warning.png": "resource/icons/warning.png"
+        }
     }
 }

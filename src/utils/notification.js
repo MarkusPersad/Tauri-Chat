@@ -1,10 +1,11 @@
+import { resolveResource } from "@tauri-apps/api/path"
 import { isPermissionGranted, requestPermission, sendNotification } from "@tauri-apps/plugin-notification"
 
 const ICONS = {
-    info: 'asset:///icons/info.png',
-    warning: 'asset:///icons/warning.png',
-    success: 'asset:///icons/color-success.png',
-    error: 'asset:///icons/color-error.png'
+    info: await resolveResource('icons/info.png'),
+    warning: await resolveResource('icons/warning.png'),
+    success: await resolveResource('icons/color-success.png'),
+    error: await resolveResource('icons/color-error.png')
 }
 export const SendNotification = async (title, content, type) => {
     let permissionGranted = await isPermissionGranted()
