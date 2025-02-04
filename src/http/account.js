@@ -1,4 +1,4 @@
-import { processResponse } from './utils';
+import { processResponse, setTokenToHeader } from './utils';
 import { GlobalHttp } from './http';
 import { delVal, getVal, setVal } from '../utils'
 import { CONSTANTS } from '../constants';
@@ -45,6 +45,7 @@ const Login = async (data) => {
 const Logout = async () => {
     try {
         let response = await GlobalHttp.request(API.Logout, null, "GET")
+        setTokenToHeader()
         await delVal(CONSTANTS.TOKEN_KEY)
         return await processResponse(response)
     } catch (error) {
