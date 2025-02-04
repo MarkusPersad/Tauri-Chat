@@ -46,11 +46,12 @@
 import { ref, onMounted } from 'vue';
 import NavBar from '../components/NavBar.vue'
 import { GetCaptcha, GlobalHttp, Login, Register } from '../http';
-import { isPassword, isUserName, isEmpty, isEmail } from '../utils';
+import { isPassword, isUserName, isEmail } from '../utils';
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
 import { useAlerts } from '../store'
 import { useRouter } from 'vue-router'
 import { exit } from '@tauri-apps/plugin-process';
+import { isEmpty } from 'lodash'
 
 const { addAlert } = useAlerts()
 const Ding = ref(false);

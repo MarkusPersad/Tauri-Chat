@@ -17,9 +17,9 @@ export const processResponse = async (response, show = false) => {
 
 export const setTokenToHeader = async () => {
     try {
-        if (isEmpty(GlobalHttp.defaultHeaders[CONSTANTS.TOKEN_KEY])) {
+        if (isEmpty(GlobalHttp.defaultHeaders[CONSTANTS.TOKEN_HEADER])) {
             let token = await getVal(CONSTANTS.TOKEN_KEY)
-            GlobalHttp.setHeader(CONSTANTS.TOKEN_KEY, token)
+            GlobalHttp.setHeader(CONSTANTS.TOKEN_HEADER, CONSTANTS.BEARER_TOKEN + token)
         }
     } catch (error) {
         throw error

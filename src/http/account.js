@@ -34,7 +34,7 @@ const Login = async (data) => {
     try {
         let response = await GlobalHttp.request(API.Login, data, "POST")
         response = await processResponse(response, true)
-        GlobalHttp.setHeader("Authorization", "Bearer " + response)
+        GlobalHttp.setHeader(CONSTANTS.TOKEN_HEADER, CONSTANTS.BEARER_TOKEN + response)
         await setVal(CONSTANTS.TOKEN_KEY, response)
         return response
     } catch (error) {
@@ -44,8 +44,8 @@ const Login = async (data) => {
 
 const Logout = async () => {
     try {
+        await setTokenToHeader()
         let response = await GlobalHttp.request(API.Logout, null, "GET")
-        setTokenToHeader()
         await delVal(CONSTANTS.TOKEN_KEY)
         return await processResponse(response)
     } catch (error) {

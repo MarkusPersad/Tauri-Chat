@@ -46,7 +46,8 @@ export const setTray = async () => {
                                 await Logout();
                             }
                         } catch (error) {
-                            await SendNotification('Error', 'Failed to Logout', 'error')
+                            await SendNotification("Error", error, 'error')
+                            throw error
                         }
                         await exit(0)
                     }
