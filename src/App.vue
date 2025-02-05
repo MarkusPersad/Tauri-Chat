@@ -3,11 +3,10 @@
     <Toast />
 </template>
 <script setup>
+import { onMounted } from 'vue';
 import Toast from './components/Toast.vue';
 import { setTray } from './utils';
-setTray().then(() => {
-    console.log('Success')
-}).catch((error) => {
-    console.log("error", error)
+onMounted(async () => {
+    await setTray()
 })
 </script>
