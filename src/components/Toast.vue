@@ -11,7 +11,6 @@
     </div>
 </template>
 <script setup>
-import { TransitionGroup } from 'vue';
 import { useAlerts } from '../store'
 import { reactive } from 'vue';
 const { alerts, removeAlert } = useAlerts()
