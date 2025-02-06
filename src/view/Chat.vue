@@ -1,5 +1,5 @@
 <template>
-    Thanks,Chat!
+    <div>Thanks,Chat!</div>
 </template>
 <script setup>
 import { onMounted } from 'vue';

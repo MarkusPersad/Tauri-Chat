@@ -16,10 +16,6 @@ export const router = createRouter({
             component: () => import('../view/Home.vue'),
             children: [
                 {
-                    path: '',
-                    redirect: 'chat',
-                },
-                {
                     path: 'chat',
                     component: () => import('../view/Chat.vue')
                 }
