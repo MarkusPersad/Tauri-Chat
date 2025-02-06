@@ -13,7 +13,17 @@ export const router = createRouter({
         },
         {
             path: '/home',
-            component: () => import('../view/Home.vue')
+            component: () => import('../view/Home.vue'),
+            children: [
+                {
+                    path: '',
+                    redirect: 'chat',
+                },
+                {
+                    path: 'chat',
+                    component: () => import('../view/Chat.vue')
+                }
+            ]
         }
     ]
 })

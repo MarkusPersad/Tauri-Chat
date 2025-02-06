@@ -10,9 +10,7 @@
                     </svg>
                     <ul tabindex="0"
                         class="menu menu-sm dropdown-content rounded-box bg-base-100 z-1 mt-3 w-52 p-2 shadow">
-                        <li><a>Homepage</a></li>
-                        <li><a>Portfolio</a></li>
-                        <li><a>About</a></li>
+                        <slot name="routes"></slot>
                     </ul>
                 </div>
             </div>

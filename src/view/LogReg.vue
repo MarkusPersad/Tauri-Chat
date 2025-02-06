@@ -46,14 +46,12 @@
 import { ref, onMounted } from 'vue';
 import NavBar from '../components/NavBar.vue'
 import { GetCaptcha, GlobalHttp, Login, Register } from '../http';
-import { isPassword, isUserName, isEmail } from '../utils';
+import { isPassword, isUserName, isEmail, SendNotification } from '../utils';
 import { getCurrentWindow, LogicalSize } from '@tauri-apps/api/window';
-import { useAlerts } from '../store'
 import { useRouter } from 'vue-router'
 import { exit } from '@tauri-apps/plugin-process';
 import { isEmpty } from 'lodash'
 
-const { addAlert } = useAlerts()
 const Ding = ref(false);
 const isLogin = ref(true);
 const router = useRouter()
@@ -131,27 +129,15 @@ const login = async () => {
     if (isEmpty(data.value.email) || isEmpty(data.value.password) ||
         isEmpty(data.value.checkCodeKey) || isEmpty(data.value.checkCode)
     ) {
-        addAlert({
-            type: 'error',
-            message: '字段不能为空',
-            duration: 1500
-        })
+        await SendNotification('错误', "字段不能为空", 'error')
         return
     }
     if (!isEmail(data.value.email)) {
-        addAlert({
-            type: 'error',
-            message: '邮箱格式错误',
-            duration: 1500
-        })
+        await SendNotification('错误', "邮箱格式错误", 'error')
         return
     }
     if (!isPassword(data.value.password)) {
-        addAlert({
-            type: 'error',
-            message: '密码格式必须包括大小写字母，长度在8~32',
-            duration: 1500
-        })
+        await SendNotification('错误', "密码必须包含大小写字母且长度在8~32位", 'error')
         return
     }
     try {
@@ -171,11 +157,6 @@ const login = async () => {
             router.push('/home')
         }
     } catch (error) {
-        addAlert({
-            type: 'error',
-            message: error.message,
-            duration: 1500
-        })
         throw error
     }
 }
@@ -184,43 +165,23 @@ const register = async () => {
     if (isEmpty(data.value.userName) || isEmpty(data.value.email) || isEmpty(data.value.password) ||
         isEmpty(data.value.checkCodeKey) || isEmpty(data.value.checkCode)
     ) {
-        addAlert({
-            type: 'error',
-            message: '字段不能为空',
-            duration: 1500
-        })
+        await SendNotification('错误', "字段不能为空", 'error')
         return
     }
     if (!isUserName(data.value.userName)) {
-        addAlert({
-            type: 'error',
-            message: '用户名必须在8~32位',
-            duration: 1500
-        })
+        await SendNotification('错误', "用户名必须在8~32位", 'error')
         return
     }
     if (!isEmail(data.value.email)) {
-        addAlert({
-            type: 'error',
-            message: '邮箱格式错误',
-            duration: 1500
-        })
+        await SendNotification('错误', "邮箱格式错误", 'error')
         return
     }
     if (!isPassword(data.value.password)) {
-        addAlert({
-            type: 'error',
-            message: '密码格式必须包括大小写字母，长度在8~32',
-            duration: 1500
-        })
+        await SendNotification('错误', "密码必须包含大小写字母,且长度为8~32", 'error')
         return
     }
     if (repassword.value !== data.value.password) {
-        addAlert({
-            type: 'error',
-            message: '两次密码必须一致',
-            duration: 1500
-        })
+        await SendNotification('错误', "两次密码必须一致", 'error')
     }
     try {
         let response = await Register({
