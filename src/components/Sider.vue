@@ -97,8 +97,8 @@
         </div>
 
         <div class="sticky inset-x-0 bottom-0 border-t border-blue-500 bg-blue-500 p-2">
-            <form action="#">
-                <button type="submit"
+            <form @submit.prevent>
+                <button @click.prevent="`#`"
                     class="group relative flex w-full justify-center rounded-lg px-2 py-1.5 text-sm text-white hover:bg-red-400 hover:text-black">
                     <svg xmlns="http://www.w3.org/2000/svg" class="size-5 opacity-75" fill="none" viewBox="0 0 24 24"
                         stroke="currentColor" stroke-width="2">
