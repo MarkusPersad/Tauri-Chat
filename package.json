@@ -28,7 +28,7 @@
     "devDependencies": {
         "@tauri-apps/cli": "^2.2.7",
         "@vitejs/plugin-vue": "^5.2.1",
-        "daisyui": "^5.0.0-beta.7",
+        "daisyui": "^5.0.0-beta.8",
         "vite": "^6.1.0"
     },
     "optionalDependencies": {
